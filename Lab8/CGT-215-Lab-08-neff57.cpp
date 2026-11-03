@@ -60,7 +60,7 @@ int main()
 
     // Load duck image
     Texture duckText;
-    LoadTex(duckText, "Images/red_balloon.png");
+    LoadTex(duckText, "Images/duck.png");
     PhysicsShapeList<PhysicsSprite> ducks;
 
     // Lambda for spawning a duck
@@ -96,8 +96,8 @@ int main()
     top.onCollision = [&drawingArrow, &world, &arrow]
         (PhysicsBodyCollisionResult result)
         {
-        drawingArrow = false;
-        world.RemovePhysicsBody(arrow);
+            drawingArrow = false;
+            world.RemovePhysicsBody(arrow);
         };
 
     // Initialize the font
@@ -112,7 +112,7 @@ int main()
     Clock clock;
     Time lastTime(clock.getElapsedTime());
     Time currentTime(lastTime);
-    int iterationTimer(0);
+    long iterationTimer(0);
 
     // While theres at least 1 arrow or an arrow currently animating
     while ((arrows > 0) || drawingArrow)
@@ -128,10 +128,13 @@ int main()
             lastTime = currentTime;
             world.UpdatePhysics(deltaMS);
 
-            // Spawn a duck every 50 frames
-            if (iterationTimer == 0) spawnDuck();
-            iterationTimer++;
-            if (iterationTimer >= 50) iterationTimer = 0;
+            // Spawn ducks
+            if (iterationTimer >= 500)
+            {
+                spawnDuck();
+                iterationTimer = 0;
+            }
+            iterationTimer += deltaMS;
 
             // Shoot an arrow when the spacebar is pressed
             if (Keyboard::isKeyPressed(Keyboard::Space) && !drawingArrow)
